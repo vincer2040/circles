@@ -1,0 +1,16 @@
+{
+    "name": "circles",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "css": "npx tailwindcss -i ./css/index.css -o ./public/styles/index.css",
+        "dev": "npx tailwindcss -i ./css/index.css -o ./public/styles/index.css --watch"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "tailwindcss": "^3.4.0"
+    }
+}
