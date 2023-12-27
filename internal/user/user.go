@@ -9,7 +9,7 @@ type User struct {
 	Password string
 }
 
-func New(first string, last string, email string, password string) User {
+func New(first, last, email, password string) User {
 	user := User{first, last, email, password}
 	user.HashPassword()
 	return user
