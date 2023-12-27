@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/vincer2040/circles/internal/db"
@@ -20,19 +21,33 @@ func Main() {
 		os.Exit(1)
 	}
 
+	key, err := util.GenerateRandomKey(32)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to generate random key %s\n", err)
+		os.Exit(1)
+	}
+
 	circlesDB, err := db.New(url)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "open database %s %s\n", url, err)
 		os.Exit(1)
 	}
 
-    defer circlesDB.Close()
+	defer circlesDB.Close()
 
-    err = circlesDB.CreateUserTable()
-    if err != nil {
+    /*
+    err = circlesDB.DropUserTable()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to drop user table %s\n", err)
+		os.Exit(1)
+	}
+    */
+
+	err = circlesDB.CreateUserTable()
+	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to create user table %s\n", err)
 		os.Exit(1)
-    }
+	}
 
 	e := echo.New()
 
@@ -44,6 +59,7 @@ func Main() {
 			cc := &util.CirclesContext{
 				Context: c,
 				DB:      *circlesDB,
+				Store:   sessions.NewCookieStore([]byte(key)),
 			}
 			return next(cc)
 		}
@@ -54,6 +70,9 @@ func Main() {
 	e.GET("/", routes.RootGet)
 	e.GET("/signup", routes.SignupGet)
 	e.POST("/signup", routes.SignupPost)
+	e.GET("/signin", routes.SigninGet)
+	e.POST("/signin", routes.SigninPost)
+    e.GET("/me", routes.MeGet)
 
 	e.Logger.Fatal(e.Start(":6969"))
 }

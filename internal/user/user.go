@@ -1,6 +1,8 @@
 package user
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"golang.org/x/crypto/bcrypt"
+)
 
 type User struct {
 	First    string
@@ -22,4 +24,12 @@ func (user *User) HashPassword() error {
 	}
 	user.Password = string(bytes)
 	return nil
+}
+
+func (user *User) Authenticate(password string) bool {
+    isAuthed := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+    if isAuthed != nil {
+        return false
+    }
+    return true
 }

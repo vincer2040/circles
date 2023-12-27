@@ -3,28 +3,14 @@
     <head>
         <meta charset="UTF-8">
         <link rel="stylesheet" href="css/index.css">
-        <title>Sign up</title>
+        <title>Sign in</title>
         <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     </head>
     <body>
         {{ template "navbar" . }}
         <main class="flex items-center justify-center pt-16">
             <article class="w-full max-w-xs">
-                <form hx-post="/signup" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="first">
-                            First name
-                        </label>
-                        <input id="first" name="first" type="text" placeholder="First name"
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight">
-                    </div>
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="last">
-                            Last name
-                        </label>
-                        <input id="last" name="last" type="text" placeholder="Last name"
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight">
-                    </div>
+                <form hx-post="/signin" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
                             Email
@@ -39,18 +25,11 @@
                         <input id="password" name="password" type="password" placeholder="******************"
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight">
                     </div>
-                    <div class="mb-6">
-                        <label class="block text-gray-700 text-sm font-bold mb-2" for="repeat-password">
-                            Repeat password
-                        </label>
-                        <input id="repeat-password" name="repeat-password" type="password" placeholder="******************"
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight">
-                    </div>
                     <div class="flex items-center justify-center">
                         <button
                             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded
                             focus:outline-none focus:shadow-outline">
-                            Sign Up
+                            Sign In
                         </button>
                     </div>
                 </form>
