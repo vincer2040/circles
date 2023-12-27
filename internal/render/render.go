@@ -13,7 +13,7 @@ type Template struct {
 
 func New() *Template {
     return &Template{
-        templates: template.Must(template.ParseGlob("public/views/*.html")),
+        templates: template.Must(template.ParseGlob("public/views/**.html")),
     }
 }
 
