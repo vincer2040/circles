@@ -4,8 +4,9 @@ import (
 	"context"
 	"database/sql"
 
-	_ "github.com/tursodatabase/libsql-client-go/libsql"
 	"github.com/vincer2040/circles/internal/user"
+	_ "github.com/tursodatabase/libsql-client-go/libsql"
+	_ "modernc.org/sqlite"
 )
 
 type CirclesDB struct {
