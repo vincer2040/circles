@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>home</title>
+        <link rel="stylesheet" href="css/index.css">
+        <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    </head>
+    <body>
+        {{ template "navbar" . }}
+        <h1 class="text-xl">Circles home</h1>
+        <p> hello {{ index . "First" }}</p>
+
+        {{ if eq .CirclesLength 0 }}
+        <p>you have no circles</p>
+        {{ else }}
+        <div hx-boost="true">
+            {{ range .Circles }}
+            <a href="/circle/{{ . }}">{{ . }}</a>
+        </div>
+        {{ end }}
+
+        {{ end }}
+    </body>
+</html>

@@ -13,7 +13,7 @@ func SigninGet(c echo.Context) error {
 	if !session.IsNew {
 		authed, ok := session.Values["authenticated"].(bool)
 		if ok && authed {
-			c.Redirect(http.StatusSeeOther, "/me")
+			c.Redirect(http.StatusSeeOther, "/home")
 		}
 	}
 
@@ -41,6 +41,6 @@ func SigninPost(c echo.Context) error {
 	session.Values["first"] = user.First
 	session.Values["email"] = user.Email
 	session.Save(cc.Request(), cc.Response())
-    cc.Response().Header().Add("Hx-Redirect", "/me")
+    cc.Response().Header().Add("Hx-Redirect", "/home")
 	return cc.String(http.StatusOK, "")
 }
