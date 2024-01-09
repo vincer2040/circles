@@ -23,6 +23,7 @@ func MeGet(c echo.Context) error {
 	}
 
 	return c.Render(http.StatusOK, "me.html", map[string]interface{}{
+        "Route": "/me",
 		"First": first,
 		"Email": email,
 	})
