@@ -35,13 +35,13 @@ func Main() {
 
 	defer circlesDB.Close()
 
-    /*
-    err = circlesDB.DropUserTable()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to drop user table %s\n", err)
-		os.Exit(1)
-	}
-    */
+	/*
+		    err = circlesDB.DropUserTable()
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "failed to drop user table %s\n", err)
+				os.Exit(1)
+			}
+	*/
 
 	err = circlesDB.CreateUserTable()
 	if err != nil {
@@ -49,9 +49,29 @@ func Main() {
 		os.Exit(1)
 	}
 
+	err = circlesDB.CreateCirclesTable()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to create circles table %s\n", err)
+		os.Exit(1)
+	}
+
+	err = circlesDB.CreateCircleUsersTable()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to create circles users table %s\n", err)
+		os.Exit(1)
+	}
+
+	err = circlesDB.CreatePostsTable()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to create posts table %s\n", err)
+		os.Exit(1)
+	}
+
 	e := echo.New()
 
 	e.Renderer = render.New()
+
+	store := sessions.NewCookieStore([]byte(key))
 
 	e.Use(middleware.Logger())
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
@@ -59,7 +79,7 @@ func Main() {
 			cc := &util.CirclesContext{
 				Context: c,
 				DB:      *circlesDB,
-				Store:   sessions.NewCookieStore([]byte(key)),
+				Store:   store,
 			}
 			return next(cc)
 		}
@@ -72,7 +92,12 @@ func Main() {
 	e.POST("/signup", routes.SignupPost)
 	e.GET("/signin", routes.SigninGet)
 	e.POST("/signin", routes.SigninPost)
-    e.GET("/me", routes.MeGet)
+	e.GET("/me", routes.MeGet)
+	e.GET("/home", routes.HomeGet)
+	e.GET("/create-circle", routes.CreateCircleGet)
+	e.POST("/create-circle", routes.CreateCirclePost)
+	e.GET("/circle/:circle", routes.CircleGet)
+    e.POST("/post/circle/:circle", routes.PostPost)
 
 	e.Logger.Fatal(e.Start(":6969"))
 }
