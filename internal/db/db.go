@@ -4,8 +4,9 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/vincer2040/circles/internal/user"
 	_ "github.com/tursodatabase/libsql-client-go/libsql"
+	"github.com/vincer2040/circles/internal/post"
+	"github.com/vincer2040/circles/internal/user"
 	_ "modernc.org/sqlite"
 )
 
@@ -74,6 +75,211 @@ func (cdb *CirclesDB) DeleteUser(email string) error {
 
 func (cdb *CirclesDB) DropUserTable() error {
 	_, err := cdb.exec("DROP TABLE IF EXISTS users")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (cdb *CirclesDB) CreateCirclesTable() error {
+	_, err := cdb.exec(
+		`CREATE TABLE IF NOT EXISTS
+        circles(
+            name TEXT NOT NULL,
+            creator TEXT NOT NULL,
+            PRIMARY KEY(name),
+            FOREIGN KEY(creator) REFERENCES users(email)
+        )
+        `,
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (cdb *CirclesDB) InsertCircle(name, creator string) error {
+	_, err := cdb.exec(
+		`INSERT INTO
+        circles(name, creator)
+        VALUES(?, ?);
+        INSERT INTO
+        circlesUsers(name, email)
+        VALUES(?, ?)
+        `,
+		name,
+		creator,
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (cdb *CirclesDB) DropCirclesTable() error {
+	_, err := cdb.exec("DROP TABLE IF EXISTS circles")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (cdb *CirclesDB) CreateCircleUsersTable() error {
+	_, err := cdb.exec(
+		`CREATE TABLE IF NOT EXISTS
+        circlesUsers(
+            name TEXT NOT NULL,
+            email TEXT NOT NULL,
+            FOREIGN KEY(name) REFERENCES circles(name),
+            FOREIGN KEY(email) REFERENCES circles(email)
+        )
+        `,
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (cdb *CirclesDB) InsertUserToCircle(circle, email string) error {
+	_, err := cdb.exec(
+		`INSERT INTO
+        circlesUsers(name, email)
+        VALUES(?, ?)
+        `,
+		circle,
+		email,
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (cdb *CirclesDB) GetUsersCircles(email string) ([]string, error) {
+	query :=
+		`SELECT name
+    FROM circlesUsers
+    WHERE email = ?
+    `
+	rows, err := cdb.db.Query(query, email)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var circles []string
+	for rows.Next() {
+		var circle string
+		if err := rows.Scan(&circle); err != nil {
+			return nil, err
+		}
+
+		circles = append(circles, circle)
+	}
+	return circles, nil
+}
+
+func (cdb *CirclesDB) UserIsInCircle(circle, email string) (bool, error) {
+	query :=
+		`SELECT email
+    FROM circlesUsers
+    WHERE name = ?
+    AND email = ?
+    `
+
+	rows, err := cdb.db.Query(query, circle, email)
+	if err != nil {
+		return false, err
+	}
+
+	defer rows.Close()
+
+	var emailFromDB string
+
+	for rows.Next() {
+		if err := rows.Scan(&emailFromDB); err != nil {
+			return false, err
+		}
+	}
+	if emailFromDB == email {
+		return true, nil
+	}
+	return false, nil
+}
+
+func (cdb *CirclesDB) DropCirclesUsersTable() error {
+	_, err := cdb.exec("DROP TABLE IF EXISTS circlesUsers")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (cdb *CirclesDB) CreatePostsTable() error {
+	_, err := cdb.exec(
+		`CREATE TABLE IF NOT EXISTS
+        posts(
+            circle TEXT NOT NULL,
+            author TEXT NOT NULL,
+            description TEXT NOT NULL,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY(circle) REFERENCES circles(name),
+            FOREIGN KEY(author) REFERENCES users(email)
+        )
+        `,
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (cdb *CirclesDB) InsertPost(circle, author, description string) error {
+	_, err := cdb.exec(
+		`INSERT INTO
+        posts(circle, author, description)
+        VALUES (?, ?, ?)
+        `,
+		circle,
+		author,
+		description,
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (cdb *CirclesDB) GetPostsForCircle(circle string) ([]post.PostFromDB, error) {
+	query :=
+		`SELECT author, description
+        FROM posts
+        WHERE circle = ?
+        ORDER BY
+        timestamp ASC
+        `
+	rows, err := cdb.db.Query(query, circle)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var posts []post.PostFromDB
+	for rows.Next() {
+		var post post.PostFromDB
+		if err := rows.Scan(&post.Author, &post.Description); err != nil {
+			return nil, err
+		}
+		posts = append(posts, post)
+	}
+	return posts, nil
+}
+
+func (cdb *CirclesDB) GetPostsForUser(email string) ([]post.PostFromDB, error) {
+	return nil, nil
+}
+
+func (cdb *CirclesDB) DropPostsTable() error {
+	_, err := cdb.exec("DROP TABLE IF EXISTS posts")
 	if err != nil {
 		return err
 	}

@@ -31,6 +31,46 @@
         <li>
             <a href="/signin" class="text-white bg-slate-700 px-3 py-2 rounded-md font-bold">signin</a>
         </li>
+        {{ else if eq .Route "/home" }}
+        <li>
+            <a href="/home" class="text-white bg-slate-700 px-3 py-2 rounded-md font-bold">home</a>
+        </li>
+        <li>
+            <a href="/create-circle" class="text-white bg-slate-600 px-3 py-2 rounded-md">create circle</a>
+        </li>
+        <li>
+            <a href="/me" class="text-white bg-slate-600 px-3 py-2 rounded-md">me</a>
+        </li>
+        {{ else if eq .Route "/me" }}
+        <li>
+            <a href="/home" class="text-white bg-slate-600 px-3 py-2 rounded-md">home</a>
+        </li>
+        <li>
+            <a href="/create-circle" class="text-white bg-slate-600 px-3 py-2 rounded-md">create circle</a>
+        </li>
+        <li>
+            <a href="/me" class="text-white bg-slate-700 px-3 py-2 rounded-md font-bold">me</a>
+        </li>
+        {{ else if eq .Route "/create-circle" }}
+        <li>
+            <a href="/home" class="text-white bg-slate-600 px-3 py-2 rounded-md">home</a>
+        </li>
+        <li>
+            <a href="/create-circle" class="text-white bg-slate-700 px-3 py-2 rounded-md font-bold">create circle</a>
+        </li>
+        <li>
+            <a href="/me" class="text-white bg-slate-600 px-3 py-2 rounded-md">me</a>
+        </li>
+        {{ else if eq .Route "/circle" }}
+        <li>
+            <a href="/home" class="text-white bg-slate-600 px-3 py-2 rounded-md">home</a>
+        </li>
+        <li>
+            <a href="/create-circle" class="text-white bg-slate-600 px-3 py-2 rounded-md">create circle</a>
+        </li>
+        <li>
+            <a href="/me" class="text-white bg-slate-600 px-3 py-2 rounded-md">me</a>
+        </li>
         {{ else }}
         <li>
             <a href="/" class="text-white bg-slate-600 px-3 py-2 rounded-md ">home</a>
