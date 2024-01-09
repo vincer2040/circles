@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>{{ index . "Circle" }}</title>
+        <link rel="stylesheet" href="/css/index.css">
+        <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    </head>
+    <body>
+        {{ template "navbar" . }}
+        <main class="flex flex-col items-center">
+            <h1 class="text-xl">{{ index . "Circle" }}</h1>
+            <div class="w-full max-w-xs">
+                <form hx-post='/post/circle/{{ index . "Circle" }}' class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="description">
+                            description
+                        </label>
+                        <textarea id="description" name="description"
+                            rows="4"
+                            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300
+                            focus:ring-blue-500 focus:border-blue-500
+                            dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
+                            dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder="Write your thoughts here...">
+                        </textarea>
+                    </div>
+                    <div class="flex items-center justify-center">
+                        <button
+                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded
+                            focus:outline-none focus:shadow-outline">
+                            send
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div>
+                {{ if eq .PostsLen 0 }}
+                <p>no posts sadge</p>
+                {{ else }}
+                <p>there are posts</p>
+                {{ range .Posts }}
+                    <p>{{ .Author }}</p>
+                    <p>{{ .Description }}</p>
+                {{ end }}
+                {{ end }}
+            </div>
+        </main>
+    </body>
+</html>
