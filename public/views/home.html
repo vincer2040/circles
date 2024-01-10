@@ -8,18 +8,28 @@
     </head>
     <body>
         {{ template "navbar" . }}
-        <h1 class="text-xl">Circles home</h1>
-        <p> hello {{ index . "First" }}</p>
+        <main class="flex flex-col items-center">
+            <h1 class="text-xl">Circles home</h1>
+            <p> hello {{ index . "First" }}</p>
 
-        {{ if eq .CirclesLength 0 }}
-        <p>you have no circles</p>
-        {{ else }}
-        <div hx-boost="true">
-            {{ range .Circles }}
-            <a href="/circle/{{ . }}">{{ . }}</a>
-        </div>
-        {{ end }}
+            {{ if eq .CirclesLength 0 }}
+            <p>you have no circles</p>
+            {{ else }}
+            <div>
+                <h2>My Circles</h2>
+                <div hx-boost="true">
+                    {{ range .Circles }}
+                    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                        <a
+                            href="/circle/{{ . }}"
+                            class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                        >{{ . }}</a>
+                    </div>
+                    {{ end }}
+                </div>
+            </div>
 
-        {{ end }}
+            {{ end }}
+        </main>
     </body>
 </html>
