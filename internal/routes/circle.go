@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -31,23 +30,15 @@ func CircleGet(c echo.Context) error {
 		return cc.Redirect(http.StatusSeeOther, "/signin")
 	}
 
-    posts, err := cc.DB.GetPostsForCircle(circle)
-    if err != nil {
-        return err
-    }
-
-    if len(posts) == 0 {
-        fmt.Println("no posts")
-    }
-
-    for _, post := range(posts) {
-        fmt.Println(post)
-    }
+	posts, err := cc.DB.GetPostsForCircle(circle)
+	if err != nil {
+		return err
+	}
 
 	return cc.Render(http.StatusOK, "circle.html", map[string]interface{}{
-		"Route":  "/circle",
-		"Circle": circle,
-        "PostsLen": len(posts),
-        "Posts": posts,
+		"Route":    "/circle",
+		"Circle":   circle,
+		"PostsLen": len(posts),
+		"Posts":    posts,
 	})
 }

@@ -252,11 +252,12 @@ func (cdb *CirclesDB) InsertPost(circle, author, description string) error {
 
 func (cdb *CirclesDB) GetPostsForCircle(circle string) ([]post.PostFromDB, error) {
 	query :=
-		`SELECT author, description
+		`SELECT first, description, timestamp
         FROM posts
+        INNER JOIN users on posts.author=users.email
         WHERE circle = ?
         ORDER BY
-        timestamp ASC
+        timestamp DESC
         `
 	rows, err := cdb.db.Query(query, circle)
 	if err != nil {
@@ -266,7 +267,7 @@ func (cdb *CirclesDB) GetPostsForCircle(circle string) ([]post.PostFromDB, error
 	var posts []post.PostFromDB
 	for rows.Next() {
 		var post post.PostFromDB
-		if err := rows.Scan(&post.Author, &post.Description); err != nil {
+		if err := rows.Scan(&post.Author, &post.Description, &post.TimeStamp); err != nil {
 			return nil, err
 		}
 		posts = append(posts, post)
