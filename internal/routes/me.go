@@ -22,9 +22,24 @@ func MeGet(c echo.Context) error {
 		return c.Redirect(http.StatusSeeOther, "/signin")
 	}
 
+	posts, err := cc.DB.GetPostsForUser(email)
+
+	if err != nil {
+		return err
+	}
+
+	circlesCreated, err := cc.DB.GetCreatorCircles(email)
+	if err != nil {
+		return err
+	}
+
 	return c.Render(http.StatusOK, "me.html", map[string]interface{}{
-        "Route": "/me",
-		"First": first,
-		"Email": email,
+		"Route":             "/me",
+		"First":             first,
+		"Email":             email,
+		"PostsLen":          len(posts),
+		"Posts":             posts,
+		"CirclesCreatedLen": len(circlesCreated),
+		"CirclesCreated":    circlesCreated,
 	})
 }

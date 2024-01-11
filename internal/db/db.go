@@ -116,6 +116,28 @@ func (cdb *CirclesDB) InsertCircle(name, creator string) error {
 	return nil
 }
 
+func (cdb *CirclesDB) GetCreatorCircles(email string) ([]string, error) {
+	query :=
+		`SELECT name
+        FROM circles
+        WHERE creator = ?
+        `
+	rows, err := cdb.db.Query(query, email)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var circles []string
+	for rows.Next() {
+		var circle string
+		if err := rows.Scan(&circle); err != nil {
+			return nil, err
+		}
+		circles = append(circles, circle)
+	}
+	return circles, nil
+}
+
 func (cdb *CirclesDB) DropCirclesTable() error {
 	_, err := cdb.exec("DROP TABLE IF EXISTS circles")
 	if err != nil {
@@ -275,8 +297,28 @@ func (cdb *CirclesDB) GetPostsForCircle(circle string) ([]post.PostFromDB, error
 	return posts, nil
 }
 
-func (cdb *CirclesDB) GetPostsForUser(email string) ([]post.PostFromDB, error) {
-	return nil, nil
+func (cdb *CirclesDB) GetPostsForUser(email string) ([]post.UserPost, error) {
+	query :=
+		`SELECT circle, description, timestamp
+        FROM posts
+        WHERE author = ?
+        ORDER BY
+        timestamp DESC
+        `
+	rows, err := cdb.db.Query(query, email)
+	if err != nil {
+		return nil, err
+	}
+	var posts []post.UserPost
+	defer rows.Close()
+	for rows.Next() {
+		var post post.UserPost
+		if err := rows.Scan(&post.Circle, &post.Description, &post.TimeStamp); err != nil {
+			return nil, err
+		}
+		posts = append(posts, post)
+	}
+	return posts, nil
 }
 
 func (cdb *CirclesDB) DropPostsTable() error {
