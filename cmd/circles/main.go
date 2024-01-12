@@ -98,6 +98,7 @@ func Main() {
 	e.POST("/create-circle", routes.CreateCirclePost)
 	e.GET("/circle/:circle", routes.CircleGet)
 	e.POST("/post/circle/:circle", routes.PostPost)
+    e.DELETE("post/delete/:id", routes.DeletePost)
 
 	e.Logger.Fatal(e.Start(":6969"))
 }

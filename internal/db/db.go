@@ -256,15 +256,16 @@ func (cdb *CirclesDB) CreatePostsTable() error {
 	return nil
 }
 
-func (cdb *CirclesDB) InsertPost(circle, author, description string) error {
+func (cdb *CirclesDB) InsertPost(circle, author, description, timestamp string) error {
 	_, err := cdb.exec(
 		`INSERT INTO
-        posts(circle, author, description)
-        VALUES (?, ?, ?)
+        posts(circle, author, description, timestamp)
+        VALUES (?, ?, ?, ?)
         `,
 		circle,
 		author,
 		description,
+        timestamp,
 	)
 	if err != nil {
 		return err
@@ -272,9 +273,22 @@ func (cdb *CirclesDB) InsertPost(circle, author, description string) error {
 	return nil
 }
 
+func (cdb *CirclesDB) DeletePost(id int64) error {
+    _, err := cdb.exec(
+        `DELETE FROM posts
+        WHERE rowid = ?
+        `,
+        id,
+    )
+    if err != nil {
+        return err
+    }
+    return nil
+}
+
 func (cdb *CirclesDB) GetPostsForCircle(circle string) ([]post.PostFromDB, error) {
 	query :=
-		`SELECT first, description, timestamp
+		`SELECT posts.rowid, first, description, timestamp
         FROM posts
         INNER JOIN users on posts.author=users.email
         WHERE circle = ?
@@ -289,7 +303,7 @@ func (cdb *CirclesDB) GetPostsForCircle(circle string) ([]post.PostFromDB, error
 	var posts []post.PostFromDB
 	for rows.Next() {
 		var post post.PostFromDB
-		if err := rows.Scan(&post.Author, &post.Description, &post.TimeStamp); err != nil {
+		if err := rows.Scan(&post.ID, &post.Author, &post.Description, &post.TimeStamp); err != nil {
 			return nil, err
 		}
 		posts = append(posts, post)
@@ -299,7 +313,7 @@ func (cdb *CirclesDB) GetPostsForCircle(circle string) ([]post.PostFromDB, error
 
 func (cdb *CirclesDB) GetPostsForUser(email string) ([]post.UserPost, error) {
 	query :=
-		`SELECT circle, description, timestamp
+		`SELECT posts.rowid, circle, description, timestamp
         FROM posts
         WHERE author = ?
         ORDER BY
@@ -313,7 +327,7 @@ func (cdb *CirclesDB) GetPostsForUser(email string) ([]post.UserPost, error) {
 	defer rows.Close()
 	for rows.Next() {
 		var post post.UserPost
-		if err := rows.Scan(&post.Circle, &post.Description, &post.TimeStamp); err != nil {
+		if err := rows.Scan(&post.ID, &post.Circle, &post.Description, &post.TimeStamp); err != nil {
 			return nil, err
 		}
 		posts = append(posts, post)
