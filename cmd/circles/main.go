@@ -35,14 +35,6 @@ func Main() {
 
 	defer circlesDB.Close()
 
-	/*
-		    err = circlesDB.DropUserTable()
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "failed to drop user table %s\n", err)
-				os.Exit(1)
-			}
-	*/
-
 	err = circlesDB.CreateUserTable()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to create user table %s\n", err)
