@@ -13,6 +13,14 @@
             <div class="w-full max-w-xs">
                 <form hx-post='/post/circle/{{ index . "Circle" }}' class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                     <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="image">
+                            image
+                        </label>
+                        <input type="file" id="image" name="image" accept="image/png image/jpeg image/jpg image/svg"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight"
+                        >
+                    </div>
+                    <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="description">
                             description
                         </label>
@@ -42,9 +50,10 @@
                 <p>no posts sadge</p>
                 {{ else }}
                 {{ range .Posts }}
-                    <p>{{ .Author }}</p>
-                    <p>{{ .TimeStamp }}</p>
-                    <p>{{ .Description }}</p>
+                    <p>id: {{ .ID }}</p>
+                    <p>author: {{ .Author }}</p>
+                    <p>timestamp: {{ .TimeStamp }}</p>
+                    <p>description: {{ .Description }}</p>
                 {{ end }}
                 {{ end }}
             </div>
