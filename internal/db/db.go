@@ -273,17 +273,18 @@ func (cdb *CirclesDB) InsertPost(circle, author, description, timestamp string) 
 	return nil
 }
 
-func (cdb *CirclesDB) DeletePost(id int64) error {
+func (cdb *CirclesDB) DeletePost(id int64, author string) error  {
 	_, err := cdb.exec(
-		`DELETE FROM posts
+        `DELETE FROM posts
         WHERE rowid = ?
         `,
 		id,
 	)
+
 	if err != nil {
 		return err
 	}
-	return nil
+    return nil
 }
 
 func (cdb *CirclesDB) GetPostsForCircle(circle string) ([]post.PostFromDB, error) {
