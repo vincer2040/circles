@@ -88,7 +88,7 @@ func (cdb *CirclesDB) CreateCirclesTable() error {
             name TEXT NOT NULL,
             creator TEXT NOT NULL,
             PRIMARY KEY(name),
-            FOREIGN KEY(creator) REFERENCES users(email)
+            FOREIGN KEY(creator) REFERENCES users(email) ON DELETE CASCADE
         )
         `,
 	)
@@ -152,8 +152,8 @@ func (cdb *CirclesDB) CreateCircleUsersTable() error {
         circlesUsers(
             name TEXT NOT NULL,
             email TEXT NOT NULL,
-            FOREIGN KEY(name) REFERENCES circles(name),
-            FOREIGN KEY(email) REFERENCES circles(email)
+            FOREIGN KEY(name) REFERENCES circles(name) ON DELETE CASCADE,
+            FOREIGN KEY(email) REFERENCES circles(email) ON DELETE CASCADE
         )
         `,
 	)
@@ -245,8 +245,8 @@ func (cdb *CirclesDB) CreatePostsTable() error {
             author TEXT NOT NULL,
             description TEXT NOT NULL,
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY(circle) REFERENCES circles(name),
-            FOREIGN KEY(author) REFERENCES users(email)
+            FOREIGN KEY(circle) REFERENCES circles(name) ON DELETE CASCADE,
+            FOREIGN KEY(author) REFERENCES users(email) ON DELETE CASCADE
         )
         `,
 	)
