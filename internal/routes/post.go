@@ -40,7 +40,7 @@ func PostPost(c echo.Context) error {
     return cc.String(http.StatusOK, "")
 }
 
-func DeletePost(c echo.Context) error {
+func PostDelete(c echo.Context) error {
     cc := c.(*util.CirclesContext)
 
     session, err := cc.Store.Get(c.Request(), "auth")
